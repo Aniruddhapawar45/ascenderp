@@ -1,7 +1,9 @@
 package com.ascenderp.controller;
 
 import com.ascenderp.dto.LoginRequest;
+import com.ascenderp.entity.User;
 import com.ascenderp.security.JwtUtil;
+import com.ascenderp.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -9,9 +11,17 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final JwtUtil jwtUtil;
+    private final UserService userService;
 
-    public AuthController(JwtUtil jwtUtil) {
+    public AuthController(JwtUtil jwtUtil,
+                          UserService userService) {
         this.jwtUtil = jwtUtil;
+        this.userService = userService;
+    }
+
+    @PostMapping("/register")
+    public User register(@RequestBody User user) {
+        return userService.registerUser(user);
     }
 
     @PostMapping("/login")
