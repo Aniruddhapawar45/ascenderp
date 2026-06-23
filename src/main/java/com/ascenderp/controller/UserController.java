@@ -26,5 +26,11 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
+
+    }
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 }

@@ -57,7 +57,8 @@ public class JwtFilter extends OncePerRequestFilter {
             if (userOptional.isPresent()) {
 
                 User user = userOptional.get();
-
+                System.out.println("USER = " + username);
+                System.out.println("ROLE = " + user.getRole());
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 username,

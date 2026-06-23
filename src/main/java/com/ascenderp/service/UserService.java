@@ -5,7 +5,7 @@ import com.ascenderp.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Service
 public class UserService {
 
@@ -16,6 +16,14 @@ public class UserService {
     }
 
     public User registerUser(User user) {
+
+        BCryptPasswordEncoder encoder =
+                new BCryptPasswordEncoder();
+
+        user.setPassword(
+                encoder.encode(user.getPassword())
+        );
+
         return userRepository.save(user);
     }
 
@@ -25,5 +33,9 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
