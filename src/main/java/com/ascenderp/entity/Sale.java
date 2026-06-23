@@ -17,15 +17,23 @@ public class Sale {
 
     private Double totalAmount;
 
-    private String customerName;
-
     private LocalDate saleDate;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private com.ascenderp.entity.Customer customer;
 
     public Sale() {
     }
 
+    // ---------- GETTERS & SETTERS ----------
+
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getProductName() {
@@ -52,19 +60,19 @@ public class Sale {
         this.totalAmount = totalAmount;
     }
 
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
     public LocalDate getSaleDate() {
         return saleDate;
     }
 
     public void setSaleDate(LocalDate saleDate) {
         this.saleDate = saleDate;
+    }
+
+    public com.ascenderp.entity.Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(com.ascenderp.entity.Customer customer) {
+        this.customer = customer;
     }
 }
