@@ -2,7 +2,10 @@ package com.ascenderp.controller;
 
 import com.ascenderp.entity.User;
 import com.ascenderp.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -17,5 +20,11 @@ public class UserController {
     @PostMapping("/register")
     public User registerUser(@RequestBody User user) {
         return userService.registerUser(user);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 }
