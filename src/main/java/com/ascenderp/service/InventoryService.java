@@ -42,5 +42,9 @@ public class InventoryService {
 
     public void delete(Long id) {
         inventoryRepository.deleteById(id);
+
+    }
+    public List<Inventory> getLowStockProducts() {
+        return inventoryRepository.findByQuantityLessThan(5);
     }
 }

@@ -50,4 +50,9 @@ public class InventoryController {
         service.delete(id);
         return "Product deleted successfully";
     }
+    @GetMapping("/low-stock")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public List<Inventory> getLowStockProducts() {
+        return service.getLowStockProducts();
+    }
 }
