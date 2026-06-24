@@ -5,6 +5,9 @@ import com.ascenderp.entity.User;
 import com.ascenderp.security.JwtUtil;
 import com.ascenderp.service.UserService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/auth")
@@ -27,10 +30,18 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
 
-        if ("admin".equals(request.getUsername())
-                && "admin123".equals(request.getPassword())) {
+        Optional<User> userOptional =
+                userService.findByUsername(request.getUsername());
 
-            return jwtUtil.generateToken(request.getUsername());
+        if (userOptional.isPresent()) {
+
+            User user = userOptional.get();
+
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+            if (encoder.matches(request.getPassword(), user.getPassword())) {
+                return jwtUtil.generateToken(user.getUsername());
+            }
         }
 
         return "Invalid Credentials";
