@@ -4,8 +4,8 @@ import com.ascenderp.dto.LoginRequest;
 import com.ascenderp.entity.User;
 import com.ascenderp.security.JwtUtil;
 import com.ascenderp.service.UserService;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -15,33 +15,42 @@ public class AuthController {
 
     private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final BCryptPasswordEncoder encoder;
 
     public AuthController(JwtUtil jwtUtil,
-                          UserService userService) {
+                          UserService userService,
+                          BCryptPasswordEncoder encoder) {
         this.jwtUtil = jwtUtil;
         this.userService = userService;
+        this.encoder = encoder;
     }
 
+    // REGISTER (IMPORTANT FIX HERE)
     @PostMapping("/register")
     public User register(@RequestBody User user) {
+
+        // 🔥 ENCRYPT PASSWORD BEFORE SAVING
+        user.setPassword(encoder.encode(user.getPassword()));
+
         return userService.registerUser(user);
     }
 
+    // LOGIN
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request) {
 
         Optional<User> userOptional =
                 userService.findByUsername(request.getUsername());
 
-        if (userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
+            return "Invalid Credentials";
+        }
 
-            User user = userOptional.get();
+        User user = userOptional.get();
 
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
-            if (encoder.matches(request.getPassword(), user.getPassword())) {
-                return jwtUtil.generateToken(user.getUsername());
-            }
+        // 🔥 COMPARE ENCRYPTED PASSWORD
+        if (encoder.matches(request.getPassword(), user.getPassword())) {
+            return jwtUtil.generateToken(user.getUsername());
         }
 
         return "Invalid Credentials";
