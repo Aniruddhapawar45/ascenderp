@@ -29,8 +29,7 @@ public class AuthController {
     @PostMapping("/register")
     public User register(@RequestBody User user) {
 
-        // 🔥 ENCRYPT PASSWORD BEFORE SAVING
-        user.setPassword(encoder.encode(user.getPassword()));
+
 
         return userService.registerUser(user);
     }
